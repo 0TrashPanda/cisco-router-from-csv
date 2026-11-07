@@ -1,0 +1,57 @@
+enable
+configure terminal
+no ip domain-lookup
+!
+interface gi0/0
+ description WAN
+ ip address dhcp
+ ip nat outside
+ no shutdown
+!
+interface gi0/1
+ description Trunk naar switch
+ no ip address
+ no shutdown
+!
+interface gi0/1.10
+ description Servers
+ encapsulation dot1Q 10
+ ip address 192.168.10.254 255.255.255.0
+ ip nat inside
+!
+interface gi0/1.20
+ description Accounting
+ encapsulation dot1Q 20
+ ip address 192.168.20.254 255.255.255.0
+ ip nat inside
+!
+interface gi0/1.30
+ description HR
+ encapsulation dot1Q 30
+ ip address 192.168.30.254 255.255.255.0
+ ip nat inside
+!
+interface gi0/1.40
+ description Marketing
+ encapsulation dot1Q 40
+ ip address 192.168.40.254 255.255.255.0
+ ip nat inside
+!
+interface gi0/1.50
+ description Production
+ encapsulation dot1Q 50
+ ip address 192.168.50.254 255.255.255.0
+ ip nat inside
+!
+ip access-list standard NAT_INSIDE
+ permit 192.168.10.0 0.0.0.255
+ permit 192.168.20.0 0.0.0.255
+ permit 192.168.30.0 0.0.0.255
+ permit 192.168.40.0 0.0.0.255
+ permit 192.168.50.0 0.0.0.255
+!
+ip nat inside source list NAT_INSIDE interface gi0/0 overload
+!
+!
+end
+write memory

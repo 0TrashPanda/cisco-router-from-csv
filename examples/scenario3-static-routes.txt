@@ -1,0 +1,29 @@
+enable
+configure terminal
+no ip domain-lookup
+!
+interface gi0/0
+ description WAN
+ ip address 172.23.80.200 255.255.254.0
+ ip nat outside
+ no shutdown
+!
+interface gi0/1
+ description Servers
+ ip address 192.168.0.254 255.255.255.0
+ ip nat inside
+ no shutdown
+!
+ip access-list standard NAT_INSIDE
+ permit 192.168.0.0 0.0.0.255
+ permit 192.168.2.0 0.0.0.255
+ permit 192.168.3.0 0.0.0.255
+!
+ip nat inside source list NAT_INSIDE interface gi0/0 overload
+!
+ip route 0.0.0.0 0.0.0.0 172.23.80.1
+ip route 192.168.2.0 255.255.255.0 192.168.0.1
+ip route 192.168.3.0 255.255.255.0 192.168.0.1
+!
+end
+write memory
